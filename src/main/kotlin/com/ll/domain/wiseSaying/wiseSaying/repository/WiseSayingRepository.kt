@@ -30,4 +30,9 @@ class WiseSayingRepository {
     fun delete(wiseSaying: WiseSaying) {
         wiseSayings.remove(wiseSaying)
     }
+
+    fun clear() {
+        lastId = 0
+        wiseSayings.clear()
+    }
 }

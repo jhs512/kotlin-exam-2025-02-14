@@ -1,6 +1,6 @@
 package com.ll.domain.wiseSaying.wiseSaying.controller
 
-import com.ll.Rq
+import com.ll.global.rq.Rq
 import com.ll.domain.wiseSaying.wiseSaying.service.WiseSayingService
 
 class WiseSayingController {

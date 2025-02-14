@@ -1,9 +1,10 @@
-package com.ll
+package com.ll.domain.wiseSaying.wiseSaying.controller
 
+import com.ll.TestRunner
 import org.assertj.core.api.Assertions.assertThat
 import kotlin.test.Test
 
-class AppTest {
+class WiseSayingControllerTest {
     @Test
     fun `명언 작성`() {
         val result = TestRunner.run(

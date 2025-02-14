@@ -51,14 +51,37 @@ class WiseSayingFileRepository : WiseSayingRepository {
             return AppConfig.dbDirPath.resolve("wiseSaying")
         }
 
-    private fun saveOnDisk(wiseSaying: WiseSaying) {
+    private fun mkdirDbDir() {
         tableDirPath.toFile().run {
             if (!exists()) {
                 mkdirs()
             }
         }
+    }
+
+    private fun saveOnDisk(wiseSaying: WiseSaying) {
+        mkdirDbDir()
 
         val wiseSayingFile = tableDirPath.resolve("${wiseSaying.id}.json")
         wiseSayingFile.toFile().writeText(wiseSaying.json)
+    }
+
+    internal fun saveLastId(lastId: Int) {
+        mkdirDbDir()
+
+        tableDirPath.resolve("lastId.txt")
+            .toFile()
+            .writeText(lastId.toString())
+    }
+
+    internal fun loadLastId(): Int {
+        return try {
+            tableDirPath.resolve("lastId.txt")
+                .toFile()
+                .readText()
+                .toInt()
+        } catch (e: Exception) {
+            0
+        }
     }
 }

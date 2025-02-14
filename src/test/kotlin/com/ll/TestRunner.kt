@@ -10,31 +10,30 @@ object TestRunner {
     private val originalOut: PrintStream = System.out
 
     fun run(input: String): String {
-        System.setIn(
-            ByteArrayInputStream(
-                input
-                    .trimIndent()
-                    .trim()
-                    .let { "$it\n종료" }
-                    .toByteArray()
-            )
-        )
+        val formattedInput = input.trimIndent().plus("\n종료")
 
-        val outputStream = ByteArrayOutputStream()
-        val printStream = PrintStream(outputStream)
+        return ByteArrayOutputStream().use { outputStream ->
+            PrintStream(outputStream).use { printStream ->
+                try {
+                    System.setIn(
+                        ByteArrayInputStream(
+                            formattedInput.toByteArray()
+                        )
+                    )
 
-        System.setOut(printStream)
+                    System.setOut(printStream)
 
-        App().run()
+                    App().run()
+                } finally {
+                    System.setIn(originalIn)
+                    System.setOut(originalOut)
+                }
+            }
 
-        val result = outputStream
-            .toString()
-            .trim()
-            .replace(Regex("\\r\\n"), "\n")
-
-        System.setIn(originalIn)
-        System.setOut(originalOut)
-
-        return result
+            outputStream
+                .toString()
+                .trim()
+                .replace("\r\n", "\n")
+        }
     }
 }

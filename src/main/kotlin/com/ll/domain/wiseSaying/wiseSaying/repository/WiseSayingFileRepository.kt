@@ -5,13 +5,10 @@ import com.ll.global.app.AppConfig
 import java.nio.file.Path
 
 class WiseSayingFileRepository : WiseSayingRepository {
-    private var lastId = 0
-    private val wiseSayings = mutableListOf<WiseSaying>()
-
     override fun save(wiseSaying: WiseSaying): WiseSaying {
         if (wiseSaying.isNew()) {
-            wiseSaying.id = ++lastId
-            wiseSayings.add(wiseSaying)
+            wiseSaying.id = loadLastId() + 1
+            saveLastId(wiseSaying.id)
         }
 
         saveOnDisk(wiseSaying)
@@ -20,7 +17,7 @@ class WiseSayingFileRepository : WiseSayingRepository {
     }
 
     override fun isEmpty(): Boolean {
-        return wiseSayings.isEmpty()
+        return findAll().isEmpty()
     }
 
     override fun findAll(): List<WiseSaying> {
@@ -41,15 +38,10 @@ class WiseSayingFileRepository : WiseSayingRepository {
     }
 
     override fun delete(wiseSaying: WiseSaying) {
-        wiseSayings.remove(wiseSaying)
-
         tableDirPath.resolve("${wiseSaying.id}.json").toFile().delete()
     }
 
     override fun clear() {
-        lastId = 0
-        wiseSayings.clear()
-
         tableDirPath.toFile().deleteRecursively()
     }
 

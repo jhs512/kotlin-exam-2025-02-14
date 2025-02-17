@@ -1,11 +1,12 @@
-package com.ll
+package com.ll.domain.wiseSaying.wiseSaying.controller
 
+import com.ll.TestRunner
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import kotlin.test.Test
 
 
-class AppTest {
+class WiseSayingControllerTest {
     @Test
     @DisplayName("명언 작성")
     fun t1() {
@@ -16,7 +17,6 @@ class AppTest {
             충무공 이순신
         """
         )
-        println("result: $result")
 
         assertThat(result).contains("명언 : ")
         assertThat(result).contains("작가 : ")

@@ -3,6 +3,7 @@ package com.ll.domain.wiseSaying.wiseSaying.controller
 import com.ll.global.bean.SingletonScope
 import com.ll.global.rq.Rq
 
+
 class WiseSayingController {
     private val wiseSayingService = SingletonScope.wiseSayingService
 
@@ -26,10 +27,13 @@ class WiseSayingController {
         val keywordType = rq.getParamValue("keywordType", "content")
         val keyword = rq.getParamValue("keyword", "")
 
-        val wiseSayings = if (keyword.isNotBlank())
-            wiseSayingService.findByKeyword(keywordType, keyword)
+        val itemsPerPage = 5
+        val pageNo: Int = rq.getParamValueAsInt("page", 1)
+
+        val wiseSayingPage = if (keyword.isNotBlank())
+            wiseSayingService.findByKeywordPaged(keywordType, keyword, itemsPerPage, pageNo)
         else
-            wiseSayingService.findAll()
+            wiseSayingService.findAllPaged(itemsPerPage, pageNo)
 
         if (keyword.isNotBlank()) {
             println("----------------------")
@@ -42,9 +46,18 @@ class WiseSayingController {
 
         println("----------------------")
 
-        wiseSayings.forEach {
+        wiseSayingPage.content.forEach {
             println("${it.id} / ${it.author} / ${it.content}")
         }
+
+        print("페이지 : ")
+
+        val pageMenu = (1..wiseSayingPage.totalPages)
+            .joinToString(" ") {
+                if (it == pageNo) "[$it]" else it.toString()
+            }
+
+        println(pageMenu)
     }
 
     fun actionDelete(rq: Rq) {

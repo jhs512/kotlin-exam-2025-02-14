@@ -2,6 +2,7 @@ package com.ll.domain.wiseSaying.wiseSaying.repository
 
 import com.ll.domain.wiseSaying.wiseSaying.entity.WiseSaying
 import com.ll.global.app.AppConfig
+import com.ll.standard.dto.Page
 import com.ll.standard.util.json.JsonUtil
 import java.nio.file.Path
 
@@ -34,6 +35,7 @@ class WiseSayingFileRepository : WiseSayingRepository {
             ?.filter { it.name.endsWith(".json") }
             ?.map { it.readText() }
             ?.map(WiseSaying.Companion::fromJsonStr)
+            ?.sortedByDescending { it.id }
             .orEmpty()
     }
 
@@ -151,5 +153,33 @@ class WiseSayingFileRepository : WiseSayingRepository {
         } else {
             wiseSayings.filter { it.content == pureKeyword }
         }
+    }
+
+    override fun findAllPaged(itemsPerPage: Int, pageNo: Int): Page<WiseSaying> {
+        val wiseSayings = findAll()
+
+        val content = wiseSayings
+            .drop((pageNo - 1) * itemsPerPage)
+            .take(itemsPerPage)
+
+        return Page(wiseSayings.size, itemsPerPage, pageNo, "", "", content)
+    }
+
+    override fun findByKeywordPaged(
+        keywordType: String,
+        keyword: String,
+        itemsPerPage: Int,
+        pageNo: Int
+    ): Page<WiseSaying> {
+        val wiseSayings = when (keywordType) {
+            "author" -> findByAuthorContent("%$keyword%")
+            else -> findByAuthorContent("%$keyword%")
+        }
+
+        val content = wiseSayings
+            .drop((pageNo - 1) * itemsPerPage)
+            .take(itemsPerPage)
+
+        return Page(wiseSayings.size, itemsPerPage, pageNo, keywordType, keyword, content)
     }
 }

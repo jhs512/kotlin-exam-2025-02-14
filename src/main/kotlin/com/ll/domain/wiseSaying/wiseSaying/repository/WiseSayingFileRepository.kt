@@ -33,7 +33,11 @@ class WiseSayingFileRepository : WiseSayingRepository {
     }
 
     override fun findById(id: Int): WiseSaying? {
-        return wiseSayings.firstOrNull { it.id == id }
+        return tableDirPath
+            .toFile()
+            .listFiles()
+            ?.find { it.name == "${id}.json" }
+            ?.let { WiseSaying.fromJsonStr(it.readText()) }
     }
 
     override fun delete(wiseSaying: WiseSaying) {
@@ -43,6 +47,8 @@ class WiseSayingFileRepository : WiseSayingRepository {
     override fun clear() {
         lastId = 0
         wiseSayings.clear()
+
+        tableDirPath.toFile().deleteRecursively()
     }
 
     private fun saveOnDisk(wiseSaying: WiseSaying) {

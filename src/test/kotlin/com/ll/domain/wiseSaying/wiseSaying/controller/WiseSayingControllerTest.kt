@@ -1,12 +1,19 @@
 package com.ll.domain.wiseSaying.wiseSaying.controller
 
 import com.ll.TestRunner
+import com.ll.global.bean.SingletonScope
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import kotlin.test.Test
 
 
 class WiseSayingControllerTest {
+    @BeforeEach
+    fun setUp() {
+        SingletonScope.wiseSayingRepository.clear()
+    }
+
     @Test
     @DisplayName("명언 작성")
     fun t1() {
